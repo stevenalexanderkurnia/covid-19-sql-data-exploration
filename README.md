@@ -207,13 +207,13 @@ Created a `PercentPopulationVaccinated` view to store the rolling vaccination qu
 
 ## Problems Encountered
 
-### Date Column Stored as VARCHAR
+### 1. Date Column Stored as VARCHAR
 
 The `date` column in both tables was imported from CSV as `varchar` rather than a proper `DATE` type. This caused results to sort alphabetically by character rather than chronologically — grouping all 1st-of-month records across years before moving to the 2nd, and so on.
 
 An `ALTER COLUMN` conversion was attempted but failed because SQL Server could not interpret the `DD/MM/YYYY` format by default, which expects `MM/DD/YYYY`. The fix was successfully applied using `CONVERT(DATE, date, 103)` with a staging column approach and `GO` batch separators, as documented in Section 1.
 
 
-### sp_rename Ambiguity Error on CovidVaccinations
+### 2. sp_rename Ambiguity Error on CovidVaccinations
 
 After successfully converting the `date` column from `varchar` to `DATE` type in `CovidVaccinations`, the final `sp_rename` step to rename `date_converted` back to `date` repeatedly threw an ambiguity error despite multiple syntax variations being attempted. The column was left as `date_converted` since all queries already reference it consistently by that name, and the data type conversion — which was the primary objective — completed successfully.
